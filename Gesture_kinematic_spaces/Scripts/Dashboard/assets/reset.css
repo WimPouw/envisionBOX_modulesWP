@@ -1,0 +1,11 @@
+body { 
+    margin: 0; 
+    background-color: #111; 
+    font-family: sans-serif;
+    height: 2000px;
+    width: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: rgba(255, 255, 255, 0.808)
+}
