@@ -1,0 +1,6 @@
+jupyterlab
+plotly
+pandas
+scipy
+shapedtw
+umap-learn
