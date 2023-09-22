@@ -1,0 +1,94 @@
+    # Project definitions (do not edit)
+Task: test
+scorer: johndoe
+date: Sep22
+multianimalproject: false
+identity:
+
+    # Project path (change when moving around)
+project_path: 
+  D:\Research_projects\3D_trackingtools\calibrating_3_cam_anipose\deeplabcut\test-johndoe-2023-09-22
+
+    # Annotation data set configuration (and individual video cropping parameters)
+video_sets:
+  ? D:\Research_projects\3D_trackingtools\calibrating_3_cam_anipose\deeplabcut\test-johndoe-2023-09-22\videos\sample60_cam1.mp4
+  : crop: 0, 540, 0, 960
+  ? D:\Research_projects\3D_trackingtools\calibrating_3_cam_anipose\deeplabcut\test-johndoe-2023-09-22\videos\sample60_cam2.mp4
+  : crop: 0, 540, 0, 960
+  ? D:\Research_projects\3D_trackingtools\calibrating_3_cam_anipose\deeplabcut\test-johndoe-2023-09-22\videos\sample60_cam3.mp4
+  : crop: 0, 540, 0, 960
+bodyparts:
+- ankle1
+- knee1
+- hip1
+- hip2
+- knee2
+- ankle2
+- wrist1
+- elbow1
+- shoulder1
+- shoulder2
+- elbow2
+- wrist2
+- chin
+- forehead
+start: 0
+stop: 1
+numframes2pick: 20
+
+    # Plotting configuration
+skeleton:
+- - ankle1
+  - knee1
+- - ankle2
+  - knee2
+- - knee1
+  - hip1
+- - knee2
+  - hip2
+- - hip1
+  - hip2
+- - shoulder1
+  - shoulder2
+- - shoulder1
+  - hip1
+- - shoulder2
+  - hip2
+- - shoulder1
+  - elbow1
+- - shoulder2
+  - elbow2
+- - chin
+  - forehead
+- - elbow1
+  - wrist1
+- - elbow2
+  - wrist2
+skeleton_color: black
+pcutoff: 0.6
+dotsize: 6
+alphavalue: 0.7
+colormap: rainbow
+
+    # Training,Evaluation and Analysis configuration
+TrainingFraction:
+- 0.95
+iteration: 0
+default_net_type: resnet_101
+default_augmenter: imgaug
+snapshotindex: -1
+batch_size: 8
+
+    # Cropping Parameters (for analysis and outlier frame detection)
+cropping: false
+    #if cropping is true for analysis, then set the values here:
+x1: 0
+x2: 640
+y1: 277
+y2: 624
+
+    # Refinement configuration (parameters from annotation dataset configuration also relevant in this stage)
+corner2move2:
+- 50
+- 50
+move2corner: true

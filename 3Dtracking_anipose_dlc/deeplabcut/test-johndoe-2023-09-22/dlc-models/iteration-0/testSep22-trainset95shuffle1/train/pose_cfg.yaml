@@ -1,0 +1,75 @@
+all_joints:
+- - 0
+- - 1
+- - 2
+- - 3
+- - 4
+- - 5
+- - 6
+- - 7
+- - 8
+- - 9
+- - 10
+- - 11
+- - 12
+- - 13
+all_joints_names:
+- ankle1
+- knee1
+- hip1
+- hip2
+- knee2
+- ankle2
+- wrist1
+- elbow1
+- shoulder1
+- shoulder2
+- elbow2
+- wrist2
+- chin
+- forehead
+batch_size:
+bottomheight: 400
+crop: false
+crop_pad: 0
+cropratio: 0.25
+dataset: dataset-test.mat
+dataset_type: imgaug
+deconvolutionstride: 2
+deterministic: false
+fg_fraction: 0.25
+global_scale: 1.0
+init_weights: 
+  D:\Research_projects\3D_trackingtools\calibrating_3_cam_anipose\deeplabcut\test-johndoe-2023-09-22\dlc-models\iteration-0\testSep22-trainset95shuffle1\train\snapshot-103000
+intermediate_supervision: false
+intermediate_supervision_layer: 12
+leftwidth: 400
+location_refinement: true
+locref_huber_loss: true
+locref_loss_weight: 1.0
+locref_stdev: 7.2801
+log_dir: log
+mean_pixel:
+- 123.68
+- 116.779
+- 103.939
+minsize: 100
+mirror: false
+net_type: resnet_101
+num_joints: 14
+num_outputs: 1
+optimizer: sgd
+output_stride: 16
+regularize: false
+rightwidth: 400
+scoremap_dir: test
+shuffle: true
+snapshot_prefix: TBD
+stride: 8.0
+topheight: 400
+weigh_negatives: false
+weigh_only_present_joints: false
+weigh_part_predictions: false
+weight_decay: 0.0001
+project_path: 
+  D:\Research_projects\3D_trackingtools\calibrating_3_cam_anipose\deeplabcut\test-johndoe-2023-09-22

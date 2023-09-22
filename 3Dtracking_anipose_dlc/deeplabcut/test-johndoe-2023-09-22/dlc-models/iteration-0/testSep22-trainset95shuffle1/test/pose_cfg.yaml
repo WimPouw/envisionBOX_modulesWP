@@ -1,0 +1,40 @@
+dataset: dataset-test.mat
+dataset_type: imgaug
+num_joints: 14
+all_joints:
+- - 0
+- - 1
+- - 2
+- - 3
+- - 4
+- - 5
+- - 6
+- - 7
+- - 8
+- - 9
+- - 10
+- - 11
+- - 12
+- - 13
+all_joints_names:
+- ankle1
+- knee1
+- hip1
+- hip2
+- knee2
+- ankle2
+- wrist1
+- elbow1
+- shoulder1
+- shoulder2
+- elbow2
+- wrist2
+- chin
+- forehead
+net_type: resnet_101
+init_weights: 
+  D:\Research_projects\3D_trackingtools\calibrating_3_cam_anipose\deeplabcut\test-johndoe-2023-09-22\dlc-models\iteration-0\testSep22-trainset95shuffle1\train\snapshot-103000
+global_scale: 1.0
+location_refinement: true
+locref_stdev: 7.2801
+scoremap_dir: test
