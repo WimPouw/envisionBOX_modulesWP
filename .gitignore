@@ -1,2 +1,5 @@
 *.data-00000-of-00001
 *.pb
+gpu_required_trackers/ROMP/*
+gpu_required_trackers/deco/*
+
