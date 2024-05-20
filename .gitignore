@@ -2,4 +2,5 @@
 *.pb
 gpu_required_trackers/ROMP/*
 gpu_required_trackers/deco/*
+Interaction_tracking/*
 
