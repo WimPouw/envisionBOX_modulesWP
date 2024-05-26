@@ -2,6 +2,7 @@
 
 Here are some coding modules by Wim Pouw.
 
+- Creating video-embedded animations (Python)
 - 3D tracking (Python)
 - Extracting amplitude envelope (R)
 - Gesture Kinematics spaces/dynamic time warping (Python) & Data Dashboard (Python)
