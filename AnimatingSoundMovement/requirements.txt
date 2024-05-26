@@ -1,0 +1,9 @@
+opencv-python
+scipy
+pandas
+glob
+matplotlib
+librosa
+numpy
+moviepy
+csv
