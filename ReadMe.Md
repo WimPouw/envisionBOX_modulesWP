@@ -3,6 +3,7 @@
 Here are some coding modules by Wim Pouw.
 
 - Creating video-embedded animations (Python)
+- Human Behavior Classification based on Convolutional Neural Networks (Python)
 - 3D tracking (Python)
 - Extracting amplitude envelope (R)
 - Gesture Kinematics spaces/dynamic time warping (Python) & Data Dashboard (Python)
