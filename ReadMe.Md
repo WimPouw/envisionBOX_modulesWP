@@ -2,6 +2,7 @@
 
 Here are some coding modules by Wim Pouw.
 
+- Visual Communication Tutorial (ViCOM) with exercises: A complete kinematic feature extraction pipeline (Python)
 - Creating video-embedded animations (Python)
 - Human Behavior Classification using Convolutional Neural Networks (Python)
 - 3D tracking (Python)
