@@ -4,7 +4,6 @@ scipy
 moviepy
 opencv-python
 numpy
-glob
 ipython
 scipy
 jupyter
