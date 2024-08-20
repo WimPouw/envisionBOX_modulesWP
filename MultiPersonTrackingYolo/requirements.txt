@@ -1,0 +1,7 @@
+ultralytics
+pydantic
+opencv-python
+csv
+numpy
+scipy
+moviepy
