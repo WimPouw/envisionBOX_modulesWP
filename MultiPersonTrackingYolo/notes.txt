@@ -1,0 +1,12 @@
+#If you want to create a conda environment
+conda create --name yolotracking
+conda activate yolotracking
+
+# and then you install the requirements
+conda install pip
+pip install -r requirements.txt
+
+# then you want it to show up in jypyter notebook
+conda install -c anaconda ipykernel
+python -m ipykernel install --user --name=yolotracking
+

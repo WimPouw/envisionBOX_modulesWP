@@ -5,3 +5,4 @@ csv
 numpy
 scipy
 moviepy
+jupyter
