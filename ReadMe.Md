@@ -11,5 +11,6 @@ Here are some coding modules by Wim Pouw.
 - Tracking and Masking Single-person face, hand, body poses with Mediapipe (Python)
 - Tracking head rotations using Mediapipe (Python)
 - Multimodal Merging (R and Python)
+- Yolo Multi-person Tracking and Social Proximity (Python)
 
 contact: wim.pouw@donders.ru.nl
