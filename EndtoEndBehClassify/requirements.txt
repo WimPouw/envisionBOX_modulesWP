@@ -3,6 +3,6 @@ mediapipe>=0.8.9.1
 numpy>=1.22.0
 opencv-python>=4.0.0.0
 tensorflow>=2.7.0
-noddingpigeon==0.6.0
+noddingpigeon==0.5.0
 moviepy
 pandas
