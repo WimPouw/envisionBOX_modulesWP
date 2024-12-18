@@ -1,0 +1,3 @@
+envisionhgdetector==0.0.3
+moviepy==2.1.1
+jupyter
