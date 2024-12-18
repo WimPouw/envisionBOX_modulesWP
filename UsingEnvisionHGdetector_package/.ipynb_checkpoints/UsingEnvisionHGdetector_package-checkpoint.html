@@ -1,0 +1,604 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Using Envision's Automatic Hand Gesture Detection PyPi package (envisionhgdetector)\n",
+    "\n",
+    "<br>\n",
+    "<div align=\"center\">Wim Pouw (wim.pouw@donders.ru.nl)</div>\n",
+    "\n",
+    "<img src=\"Images/envision_banner.png\" alt=\"isolated\" width=\"300\"/>\n",
+    "\n",
+    "<img src=\"Images/ex.gif\">\n",
+    "\n",
+    "## Info\n",
+    "In the following notebook, we are going to simply use an envisionbox python package. This package is called \"envisionhgdetector\" and contains functions to automatically annotate gesture. In some other envisionbox module on training a gesture classifier we exhibited an [end-to-end pipeline](https://github.com/WimPouw/envisionBOX_modulesWP/tree/main/UsingEnvisionHGdetector_package) for training a model on particular human behaviors, e.g., head nodding, clapping; and then producing some inferences on new videos. This package builds further on that work. Namely, we have trained convolutional neural network to differientate no gestures (including self-adaptors), and a gesture. We do this based on the SAGA dataset, the Zhubo dataset, and the TED M3D dataset. Given that we have trained it on a bit of variability in terms of datasets and angles, and more than 9000 gestures, we can use this gesture detector to a little bit more varied settings than we could do would we have trained on a single dataset.\n",
+    "\n",
+    "Now, don't get too excited! The performance is not extraordinary or anything, and it still awaits proper testing and further updating with better trained models (we are working on it...). Currently not differientating types of gestures (as far as that is possible; we are working on it...). But it is good enough for some purposes to have a quick pass over on a set of videos and get some prominent gestures out. Once we have the gestures, we can do all kinds of other interesting things, e.g., generate gesture kinematic statistics, or generate gesture networks. But now all automatically!\n",
+    "\n",
+    "## Package info\n",
+    "https://pypi.org/project/envisionhgdetector/\n",
+    "\n",
+    "### What does envisionhgdetecotor do\n",
+    "* It tracks upper body, hands, and face landmarks (generating 29 features)\n",
+    "* It makes an inference based on 25 frames of data, whether it labels no gesture (default implicit label), gesture (label: Gesture), or some kind of movement that is not a gesture (label: Move).\n",
+    "* It outputs a labeled video, an ELAN file, a confidence timeseries, and a gesture segment list (with labels and start and end times).\n",
+    "* UPCOMING: It will in the future add a bunch of analyses on the gestures it isolates\n",
+    "\n",
+    "## Installation\n",
+    "It is best to install in a conda environment. \n",
+    "\n",
+    "conda create -n envision python = 3.9\n",
+    "\n",
+    "conda activate envision\n",
+    "\n",
+    "Then proceed: \n",
+    "\n",
+    "pip install -r requirements.txt\n",
+    "\n",
+    "## citation for this notebook\n",
+    "* Pouw, W. (2024). EnvisionBOX modules for social signal processing (Version 1.0.0) [Computer software]. https://github.com/WimPouw/envisionBOX_modulesWP\n",
+    "\n",
+    "## Citation\n",
+    "If you use this package, please cite:\n",
+    "\n",
+    "* Pouw, W. (2024). envisionhgdetector: Hand Gesture Detection Using a Convolutional Neural Network (Version 0.0.2) [Computer software]. https://github.com/WimPouw/envisionhgdetector\n",
+    "\n",
+    "### Citations for the packages and datasets\n",
+    "Original Noddingpigeon Training code:\n",
+    "* Yung, B. (2022). Nodding Pigeon (Version 0.6.0) [Computer software]. https://github.com/bhky/nodding-pigeon\n",
+    "\n",
+    "Zhubo dataset (used for training):\n",
+    "* Bao, Y., Weng, D., & Gao, N. (2024). Editable Co-Speech Gesture Synthesis Enhanced with Individual Representative Gestures. Electronics, 13(16), 3315.\n",
+    "\n",
+    "SAGA dataset (used for training)\n",
+    "* Lücking, A., Bergmann, K., Hahn, F., Kopp, S., & Rieser, H. (2010). The Bielefeld speech and gesture alignment corpus (SaGA). In LREC 2010 workshop: Multimodal corpora–advances in capturing, coding and analyzing multimodality.\n",
+    "\n",
+    "TED M3D:\n",
+    "* Rohrer, Patrick. A temporal and pragmatic analysis of gesture-speech association: A corpus-based approach using the novel MultiModal MultiDimensional (M3D) labeling system. Diss. Nantes Université; Universitat Pompeu Fabra (Barcelone, Espagne), 2022.\n",
+    "\n",
+    "MediaPipe:\n",
+    "* Lugaresi, C., Tang, J., Nash, H., McClanahan, C., Uboweja, E., Hays, M., ... & Grundmann, M. (2019). MediaPipe: A framework for building perception pipelines. arXiv preprint arXiv:1906.08172."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Lets get started\n",
+    "For this tutorial, I have two videos that I would like to segment for hand gestures. They all live in the folder: './videos_to_label/'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os\n",
+    "import glob as glob\n",
+    "\n",
+    "videofoldertoday = './videos_to_label/'\n",
+    "outputfolder = './output/'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "MoviePy - Building video ./temp/example_1.mp4.\n",
+      "MoviePy - Writing audio in example_1TEMP_MPY_wvf_snd.mp3\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                   \r"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "MoviePy - Done.\n",
+      "MoviePy - Writing video ./temp/example_1.mp4\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "frame_index:  73%|███████▎  | 309/421 [00:00<00:00, 1065.50it/s, now=None]d:\\Programs\\Conda_packages\\envs\\envision\\lib\\site-packages\\moviepy\\video\\io\\ffmpeg_reader.py:157: UserWarning: In file ./videos_to_label\\videoplayback (2).mp4, 388800 bytes wanted but 0 bytes read at frame index 420 (out of a total 421 frames), at time 14.01/14.06 sec. Using the last valid frame instead.\n",
+      "  warnings.warn(\n",
+      "                                                                          \r"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "MoviePy - Done !\n",
+      "MoviePy - video ready ./temp/example_1.mp4\n",
+      "MoviePy - Building video ./temp/example_2.mp4.\n",
+      "MoviePy - Writing audio in example_2TEMP_MPY_wvf_snd.mp3\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                   \r"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "MoviePy - Done.\n",
+      "MoviePy - Writing video ./temp/example_2.mp4\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "frame_index:  97%|█████████▋| 357/367 [00:00<00:00, 1291.76it/s, now=None]d:\\Programs\\Conda_packages\\envs\\envision\\lib\\site-packages\\moviepy\\video\\io\\ffmpeg_reader.py:157: UserWarning: In file ./videos_to_label\\videoplayback (2)_2_1.mp4, 388800 bytes wanted but 0 bytes read at frame index 366 (out of a total 367 frames), at time 12.21/12.27 sec. Using the last valid frame instead.\n",
+      "  warnings.warn(\n",
+      "                                                                          "
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "MoviePy - Done !\n",
+      "MoviePy - video ready ./temp/example_2.mp4\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\r"
+     ]
+    }
+   ],
+   "source": [
+    "from moviepy import VideoFileClip\n",
+    "# list all videos in the folder\n",
+    "videos = glob.glob(videofoldertoday + '*.mp4')\n",
+    "\n",
+    "# show one video with the labels using moviepy called 'example_1'\n",
+    "clip = VideoFileClip(videos[0]) # this is an opencv video so we need to rerender it, to show it in this notebook\n",
+    "clip.write_videofile(\"./temp/example_1.mp4\")\n",
+    "clip = VideoFileClip(videos[1])\n",
+    "clip.write_videofile(\"./temp/example_2.mp4\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<video src=\"./temp/example_1.mp4\" controls  width=\"640\"  height=\"480\">\n",
+       "      Your browser does not support the <code>video</code> element.\n",
+       "    </video>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.Video object>"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# now show the two videos\n",
+    "from IPython.display import Video\n",
+    "Video(\"./temp/example_1.mp4\", width=640, height=480)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<video src=\"./temp/example_2.mp4\" controls  width=\"640\"  height=\"480\">\n",
+       "      Your browser does not support the <code>video</code> element.\n",
+       "    </video>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.Video object>"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "Video(\"./temp/example_2.mp4\", width=640, height=480)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "From the pypi package info we see that we can simply use this to get started:\n",
+    "\n",
+    "```\n",
+    "from envisionhgdetector import GestureDetector\n",
+    "\n",
+    "# Initialize detector\n",
+    "detector = GestureDetector(\n",
+    "    motion_threshold=0.8,    # Sensitivity to motion\n",
+    "    gesture_threshold=0.8,   # Confidence threshold for gestures\n",
+    "    min_gap_s=0.3,          # Minimum gap between gestures\n",
+    "    min_length_s=0.3        # Minimum gesture duration\n",
+    ")\n",
+    "\n",
+    "# Process videos\n",
+    "results = detector.process_folder(\n",
+    "    video_folder=\"path/to/videos\",\n",
+    "    output_folder=\"path/to/output\"\n",
+    ")\n",
+    "```\n",
+    "\n",
+    "## play around\n",
+    "The gesture annotations can be finetuned with the settings you have:\n",
+    "1. confidence level of movement\n",
+    "2. if movement, then what is the confidence level for the gesture or move category\n",
+    "3. when should gestures be merged (x second gap) into one\n",
+    "4. what is the shortest gesture you want to consider (oterwhise remove)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "WARNING:tensorflow:From d:\\Programs\\Conda_packages\\envs\\envision\\lib\\site-packages\\keras\\src\\backend\\tensorflow\\core.py:222: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.\n",
+      "\n",
+      "Successfully loaded weights from d:\\Programs\\Conda_packages\\envs\\envision\\lib\\site-packages\\envisionhgdetector\\model\\SAGAplus_gesturenogesture_trained_binaryCNNmodel_weightsv1.h5\n",
+      "\n",
+      "Processing videoplayback (2).mp4...\n",
+      "Generating labeled video...\n",
+      "Generating elan file...\n",
+      "Done processing videoplayback (2).mp4, go look in the output folder\n",
+      "\n",
+      "Processing videoplayback (2)_2_1.mp4...\n",
+      "Generating labeled video...\n",
+      "Generating elan file...\n",
+      "Done processing videoplayback (2)_2_1.mp4, go look in the output folder\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "{'videoplayback (2).mp4': {'stats': {'average_motion': 0.7977464066799542,\n",
+       "   'average_gesture': 0.9636104600598113,\n",
+       "   'average_move': 0.036389540797428725},\n",
+       "  'output_path': 'd:\\\\Research_projects\\\\envisionBOX_modulesWP\\\\UsingEnvisionHGdetector_package\\\\output\\\\videoplayback (2).mp4.eaf'},\n",
+       " 'videoplayback (2)_2_1.mp4': {'stats': {'average_motion': 0.7232601379768716,\n",
+       "   'average_gesture': 0.9748914827380264,\n",
+       "   'average_move': 0.025108517972719773},\n",
+       "  'output_path': 'd:\\\\Research_projects\\\\envisionBOX_modulesWP\\\\UsingEnvisionHGdetector_package\\\\output\\\\videoplayback (2)_2_1.mp4.eaf'}}"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from envisionhgdetector import GestureDetector\n",
+    "import os\n",
+    "\n",
+    "# absolute path \n",
+    "videofoldertoday = os.path.abspath('./videos_to_label/')\n",
+    "outputfolder = os.path.abspath('./output/')\n",
+    "\n",
+    "# create a detector object\n",
+    "detector = GestureDetector(motion_threshold=0.9, gesture_threshold=0.9, min_gap_s =0.2, min_length_s=0.5)\n",
+    "\n",
+    "# just do the detection on the folder\n",
+    "detector.process_folder(\n",
+    "    input_folder=videofoldertoday,\n",
+    "    output_folder=outputfolder,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "labeled_videoplayback (2).mp4\n",
+      "labeled_videoplayback (2)_2_1.mp4\n",
+      "videoplayback (2).mp4.eaf\n",
+      "videoplayback (2).mp4_predictions.csv\n",
+      "videoplayback (2).mp4_segments.csv\n",
+      "videoplayback (2)_2_1.mp4.eaf\n",
+      "videoplayback (2)_2_1.mp4_predictions.csv\n",
+      "videoplayback (2)_2_1.mp4_segments.csv\n"
+     ]
+    },
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>start_time</th>\n",
+       "      <th>end_time</th>\n",
+       "      <th>labelid</th>\n",
+       "      <th>label</th>\n",
+       "      <th>duration</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1.310345</td>\n",
+       "      <td>3.862069</td>\n",
+       "      <td>1</td>\n",
+       "      <td>Gesture</td>\n",
+       "      <td>2.551724</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>5.034483</td>\n",
+       "      <td>5.724138</td>\n",
+       "      <td>2</td>\n",
+       "      <td>Gesture</td>\n",
+       "      <td>0.689655</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>7.551724</td>\n",
+       "      <td>8.379310</td>\n",
+       "      <td>3</td>\n",
+       "      <td>Gesture</td>\n",
+       "      <td>0.827586</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>8.586207</td>\n",
+       "      <td>9.931034</td>\n",
+       "      <td>4</td>\n",
+       "      <td>Gesture</td>\n",
+       "      <td>1.344828</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>11.689655</td>\n",
+       "      <td>12.413793</td>\n",
+       "      <td>5</td>\n",
+       "      <td>Gesture</td>\n",
+       "      <td>0.724138</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   start_time   end_time  labelid    label  duration\n",
+       "0    1.310345   3.862069        1  Gesture  2.551724\n",
+       "1    5.034483   5.724138        2  Gesture  0.689655\n",
+       "2    7.551724   8.379310        3  Gesture  0.827586\n",
+       "3    8.586207   9.931034        4  Gesture  1.344828\n",
+       "4   11.689655  12.413793        5  Gesture  0.724138"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "import os\n",
+    "# lets list the output\n",
+    "outputfiles = glob.glob(outputfolder + '/*')\n",
+    "for file in outputfiles:\n",
+    "    print(os.path.basename(file))\n",
+    "\n",
+    "# load one of the predictions\n",
+    "csvfilessegments = glob.glob(outputfolder + '/*segments.csv')\n",
+    "df = pd.read_csv(csvfilessegments[0])\n",
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# now assess the labeled video data\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "MoviePy - Building video ./temp/example_2_labeled.mp4.\n",
+      "MoviePy - Writing video ./temp/example_2_labeled.mp4\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                          \r"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "MoviePy - Done !\n",
+      "MoviePy - video ready ./temp/example_2_labeled.mp4\n"
+     ]
+    },
+    {
+     "data": {
+      "text/html": [
+       "<video src=\"./temp/example_2_labeled.mp4\" controls  width=\"640\"  height=\"480\">\n",
+       "      Your browser does not support the <code>video</code> element.\n",
+       "    </video>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.Video object>"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "videoslabeled = glob.glob(outputfolder + '/*.mp4')\n",
+    "\n",
+    "# another one\n",
+    "clip = VideoFileClip(videoslabeled[1])\n",
+    "clip.write_videofile(\"./temp/example_2_labeled.mp4\")\n",
+    "Video(\"./temp/example_2_labeled.mp4\", width=640, height=480)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "MoviePy - Building video ./temp/example_1_labeled.mp4.\n",
+      "MoviePy - Writing video ./temp/example_1_labeled.mp4\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "                                                                          "
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "MoviePy - Done !\n",
+      "MoviePy - video ready ./temp/example_1_labeled.mp4\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\r"
+     ]
+    },
+    {
+     "data": {
+      "text/html": [
+       "<video src=\"./temp/example_1_labeled.mp4\" controls  width=\"640\"  height=\"480\">\n",
+       "      Your browser does not support the <code>video</code> element.\n",
+       "    </video>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.Video object>"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "videoslabeled = glob.glob(outputfolder + '/*.mp4')\n",
+    "\n",
+    "# another one\n",
+    "clip = VideoFileClip(videoslabeled[0])\n",
+    "clip.write_videofile(\"./temp/example_1_labeled.mp4\")\n",
+    "Video(\"./temp/example_1_labeled.mp4\", width=640, height=480)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Concluding remarks\n",
+    "It is important to test the accuracy of your classifier against some hand-labeled data that was not used to train your model on. Indeed, you would report a confusion matrix (e.g., false positive rate, hits, etc.) or you the machine-human interrater reliability. In the future I would like to add such code in this module, as well train a general model for detecting general gestures. Do you have data suitable for this and you would like to use it, you can contact me (wim.pouw@donders.ru.nl). In general it would be great to know if this module is valuable for your behaviors, and knowing the boundary conditions of this pipeline."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
