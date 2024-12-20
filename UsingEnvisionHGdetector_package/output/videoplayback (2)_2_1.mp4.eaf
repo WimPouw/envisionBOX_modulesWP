@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ANNOTATION_DOCUMENT AUTHOR="" DATE="2024-12-18-21-40-44" FORMAT="3.0" VERSION="3.0"
+<ANNOTATION_DOCUMENT AUTHOR="" DATE="2024-12-20-18-39-15" FORMAT="3.0" VERSION="3.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mpi.nl/tools/elan/EAFv3.0.xsd">
     <HEADER MEDIA_FILE="" TIME_UNITS="milliseconds">
-        <MEDIA_DESCRIPTOR MEDIA_URL="file://d:\Research_projects\envisionBOX_modulesWP\UsingEnvisionHGdetector_package\videos_to_label\videoplayback (2)_2_1.mp4"
+        <MEDIA_DESCRIPTOR MEDIA_URL="file://c:\Users\u668173\Desktop\wimpouwenvisionboxwp\envisionBOX_modulesWP\UsingEnvisionHGdetector_package\videos_to_label\videoplayback (2)_2_1.mp4"
             MIME_TYPE="video/mp4" RELATIVE_MEDIA_URL=""/>
         <PROPERTY NAME="lastUsedAnnotationId">0</PROPERTY>
     </HEADER>
     <TIME_ORDER>
-        <TIME_SLOT TIME_SLOT_ID="ts1" TIME_VALUE="310"/>
-        <TIME_SLOT TIME_SLOT_ID="ts2" TIME_VALUE="1551"/>
-        <TIME_SLOT TIME_SLOT_ID="ts3" TIME_VALUE="5517"/>
-        <TIME_SLOT TIME_SLOT_ID="ts4" TIME_VALUE="6931"/>
-        <TIME_SLOT TIME_SLOT_ID="ts5" TIME_VALUE="7310"/>
-        <TIME_SLOT TIME_SLOT_ID="ts6" TIME_VALUE="8137"/>
-        <TIME_SLOT TIME_SLOT_ID="ts7" TIME_VALUE="8896"/>
-        <TIME_SLOT TIME_SLOT_ID="ts8" TIME_VALUE="10724"/>
+        <TIME_SLOT TIME_SLOT_ID="ts1" TIME_VALUE="344"/>
+        <TIME_SLOT TIME_SLOT_ID="ts2" TIME_VALUE="1586"/>
+        <TIME_SLOT TIME_SLOT_ID="ts3" TIME_VALUE="2172"/>
+        <TIME_SLOT TIME_SLOT_ID="ts4" TIME_VALUE="2793"/>
+        <TIME_SLOT TIME_SLOT_ID="ts5" TIME_VALUE="5517"/>
+        <TIME_SLOT TIME_SLOT_ID="ts6" TIME_VALUE="7103"/>
+        <TIME_SLOT TIME_SLOT_ID="ts7" TIME_VALUE="7275"/>
+        <TIME_SLOT TIME_SLOT_ID="ts8" TIME_VALUE="8379"/>
+        <TIME_SLOT TIME_SLOT_ID="ts9" TIME_VALUE="8896"/>
+        <TIME_SLOT TIME_SLOT_ID="ts10" TIME_VALUE="10724"/>
     </TIME_ORDER>
     <TIER DEFAULT_LOCALE="en" LINGUISTIC_TYPE_REF="default" TIER_ID="PREDICTED">
         <ANNOTATION>
@@ -34,6 +36,11 @@
         </ANNOTATION>
         <ANNOTATION>
             <ALIGNABLE_ANNOTATION ANNOTATION_ID="a4" TIME_SLOT_REF1="ts7" TIME_SLOT_REF2="ts8">
+                <ANNOTATION_VALUE>Gesture</ANNOTATION_VALUE>
+            </ALIGNABLE_ANNOTATION>
+        </ANNOTATION>
+        <ANNOTATION>
+            <ALIGNABLE_ANNOTATION ANNOTATION_ID="a5" TIME_SLOT_REF1="ts9" TIME_SLOT_REF2="ts10">
                 <ANNOTATION_VALUE>Gesture</ANNOTATION_VALUE>
             </ALIGNABLE_ANNOTATION>
         </ANNOTATION>
