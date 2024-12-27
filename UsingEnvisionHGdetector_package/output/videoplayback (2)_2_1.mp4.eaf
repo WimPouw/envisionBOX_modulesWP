@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ANNOTATION_DOCUMENT AUTHOR="" DATE="2024-12-27-12-42-25" FORMAT="3.0" VERSION="3.0"
+<ANNOTATION_DOCUMENT AUTHOR="" DATE="2024-12-27-13-56-16" FORMAT="3.0" VERSION="3.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mpi.nl/tools/elan/EAFv3.0.xsd">
     <HEADER MEDIA_FILE="" TIME_UNITS="milliseconds">
-        <MEDIA_DESCRIPTOR MEDIA_URL="file://d:\Research_projects\envisionBOX_modulesWP\UsingEnvisionHGdetector_package\videos_to_label\videoplayback (2)_2_1.mp4"
+        <MEDIA_DESCRIPTOR MEDIA_URL="file://c:\Users\u668173\Desktop\wimpouwenvisionboxwp\envisionBOX_modulesWP\UsingEnvisionHGdetector_package\videos_to_label\videoplayback (2)_2_1.mp4"
             MIME_TYPE="video/mp4" RELATIVE_MEDIA_URL=""/>
         <PROPERTY NAME="lastUsedAnnotationId">0</PROPERTY>
     </HEADER>
